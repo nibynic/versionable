@@ -1,8 +1,5 @@
 # Versionable
-Short description and motivation.
-
-## Usage
-How to use my plugin.
+Simple versioning for Rails Active Record with relationship support.
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -19,6 +16,16 @@ $ bundle
 Or install it yourself as:
 ```bash
 $ gem install versionable
+```
+
+## Usage
+
+### Setup
+Versionable needs `versions` table, which can be generated using these commands:
+
+```ruby
+rails g versionable:install
+rails db:migrate
 ```
 
 ## Contributing
