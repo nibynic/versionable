@@ -28,6 +28,45 @@ rails g versionable:install
 rails db:migrate
 ```
 
+### Model configuration
+To enable change tracking in your model, just call `acts_as_versionable`. It accepts
+same options as [`as_json` method](https://api.rubyonrails.org/classes/ActiveModel/Serializers/JSON.html#method-i-as_json).
+These options will be used to produce JSON snapshot of your data and compare it
+with previous versions to detect changes.
+
+```ruby
+class BlogPost < ApplicationRecord
+  acts_as_versionable only: [:title, :contents]
+end
+```
+
+It must be noted that Versionable applies some changes on your configuration:
+
+- `:root` will be always set to `false`,
+- `:created_at` and `:updated_at` will be always excluded (that applies to included
+  relationships as well).
+
+### Storying versions
+Now each time you'd like to store a version, all you have to do is to call
+`store_versions` on your model. It takes only one optional argument wich is
+version author.
+
+```ruby
+class BlogPostsController < ApplicationController
+
+  def update
+    @blog_post = BlogPost.find(params[:id])
+    if @blog_post.update_attributes(blog_post_params)
+      @blog_post.store_versions(current_user)
+      # render success
+    else
+      # render failure
+    end
+  end
+
+end
+```
+
 ## Contributing
 Contribution directions go here.
 

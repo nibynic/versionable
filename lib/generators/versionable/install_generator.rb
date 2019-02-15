@@ -6,14 +6,14 @@ module Versionable
 
     remove_argument :attributes, :name
 
+    def name
+      "CreateVersions"
+    end
+
     private
 
     def set_local_assigns!
       @migration_template = "migration.rb"
-    end
-
-    def name
-      "CreateVersions"
     end
 
     def attributes
