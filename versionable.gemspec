@@ -29,4 +29,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "sqlite3", "~> 1.3.6"
   spec.add_development_dependency "appraisal"
+  spec.add_development_dependency "factory_bot_rails"
+  spec.add_development_dependency "spy"
 end
