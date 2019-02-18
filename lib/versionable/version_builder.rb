@@ -16,15 +16,16 @@ module Versionable
     def store
       last_version = record.versions.order(:created_at).last
 
-      event = last_version.present? ? :update : :create
+      event = record.destroyed? ? :destroy : last_version.present? ? :update : :create
 
       previous_snapshot = last_version.try(:data_snapshot) || {}
       diff = diff(previous_snapshot, current_snapshot)
 
       if event != :change || diff.any?
-        version = record.versions.create(
+        version = Versionable::Version.create(
           event: event,
           author: author,
+          versionable: record,
           data_snapshot: current_snapshot,
           data_changes: diff
         )

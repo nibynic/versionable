@@ -44,4 +44,25 @@ class Versionable::VersionBuilderTest < ActiveSupport::TestCase
       "content" => "hello!"
     }), version.data_snapshot
   end
+
+  test "it detects destroy event" do
+    post = create(:post, title: "My post", content: "hello!")
+    user = create(:user)
+
+    Versionable::VersionBuilder.new(post, user).store
+
+    post.destroy
+
+    version = Versionable::VersionBuilder.new(post, user).store
+
+    assert_equal "destroy", version.event
+    assert_equal user, version.author
+    assert_equal version, post.versions.last
+    assert_equal [], version.data_changes
+    assert_equal ({
+      "id" => post.id,
+      "title" => "My post",
+      "content" => "hello!"
+    }), version.data_snapshot
+  end
 end
