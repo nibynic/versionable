@@ -23,4 +23,12 @@ class Versionable::ActsAsVersionableTest < ActiveSupport::TestCase
     assert_equal true, create(:post).respond_to?(:versions)
     assert_equal false, create(:category).respond_to?(:versions)
   end
+
+  test "it stores versionable_options" do
+    class Subject < ActiveRecord::Base
+      acts_as_versionable only: :user
+    end
+
+    assert_equal ({ only: :user }), Subject.versionable_options
+  end
 end

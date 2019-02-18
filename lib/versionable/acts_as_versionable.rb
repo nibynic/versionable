@@ -7,14 +7,17 @@ module Versionable
     class_methods do
       def acts_as_versionable(options = {})
         include ModelExtension
+        @versionable_options = options
       end
+
+      attr_reader :versionable_options
     end
 
     module ModelExtension
       extend ActiveSupport::Concern
 
       included do
-        has_many :versions, as: :versionable
+        has_many :versions, as: :versionable, class_name: "Versionable::Version"
       end
 
       def store_versions(author = nil)

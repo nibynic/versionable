@@ -9,7 +9,7 @@ class Versionable::OptionNormalizationTest < ActiveSupport::TestCase
     assert_equal ({
       root: false,
       except: [:created_at, :updated_at]
-    }), Subject.new.normalize_options(root: "model")
+    }), Subject.new.send(:normalize_options, root: "model")
   end
 
   test "it excludes created_at and updated_at" do
@@ -17,14 +17,14 @@ class Versionable::OptionNormalizationTest < ActiveSupport::TestCase
       root: false,
       only: [:title],
       except: [:created_at, :updated_at]
-    }), Subject.new.normalize_options(
+    }), Subject.new.send(:normalize_options,
       only: [:title]
     )
 
     assert_equal ({
       root: false,
       except: [:title, :created_at, :updated_at]
-    }), Subject.new.normalize_options(
+    }), Subject.new.send(:normalize_options,
       except: [:title]
     )
   end
@@ -38,7 +38,7 @@ class Versionable::OptionNormalizationTest < ActiveSupport::TestCase
         }
       },
       except: [:created_at, :updated_at]
-    }), Subject.new.normalize_options(
+    }), Subject.new.send(:normalize_options,
       include: :comments
     )
 
@@ -55,7 +55,7 @@ class Versionable::OptionNormalizationTest < ActiveSupport::TestCase
         }
       },
       except: [:created_at, :updated_at]
-    }), Subject.new.normalize_options(
+    }), Subject.new.send(:normalize_options, 
       include: { comments: { include: :author } }
     )
   end

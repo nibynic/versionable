@@ -1,5 +1,6 @@
 require "versionable/railtie"
-require_relative "versionable/acts_as_versionable"
+require "versionable/acts_as_versionable"
+require "app/models/versionable/version"
 
 module Versionable
   # Your code goes here...
