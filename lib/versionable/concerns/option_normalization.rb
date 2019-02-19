@@ -4,14 +4,20 @@ module Versionable
 
     private
 
-    def options
-      @options ||= normalize_options(record.class.versionable_options)
-    end
-
     def normalize_options(options = {})
       options[:root] = false
       force_except_option(options)
       options
+    end
+
+    def get_included_paths(options = {})
+      paths = []
+      to_hash(options[:include]).each do |key, value|
+        paths += [key.to_s] + get_included_paths(value).map do |nested_key|
+          [key, nested_key].join(".")
+        end
+      end
+      paths
     end
 
     def force_except_option(options = {})
@@ -20,6 +26,9 @@ module Versionable
       included = to_hash(options[:include])
       if included.any?
         options[:include] = included
+        options[:except] += included.map do |key, value|
+          :"#{key}_id" if key.to_s.singularize == key.to_s
+        end.compact
         options[:include].each do |key, value|
           force_except_option(value)
         end

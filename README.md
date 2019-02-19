@@ -40,11 +40,35 @@ class BlogPost < ApplicationRecord
 end
 ```
 
-It must be noted that Versionable applies some changes on your configuration:
+Please be aware that Versionable applies some changes on your configuration:
 
 - `:root` will be always set to `false`,
 - `:created_at` and `:updated_at` will be always excluded (that applies to included
-  relationships as well).
+  relationships as well),
+- Foreign keys of relationships that are listed in `include` option will be excluded.
+
+### Including relationships
+Versionable allows you to include related records in version snapshot. Just add
+your relationships to `include` option:
+
+```ruby
+class BlogPost < ApplicationRecord
+  acts_as_versionable include: :comments
+  has_many :comments
+end
+```
+
+And then define `parent` option on the other side of the relationship:
+
+```ruby
+class Comment < ApplicationRecord
+  acts_as_versionable parent: :blog_post
+  belongs_to :blog_post
+end
+```
+
+Now even if you call `store_versions` on a comment, it will create version for
+its blog post.
 
 ### Storying versions
 Now each time you'd like to store a version, all you have to do is to call

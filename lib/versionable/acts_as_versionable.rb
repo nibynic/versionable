@@ -18,10 +18,17 @@ module Versionable
 
       included do
         has_many :versions, as: :versionable, class_name: "Versionable::Version"
+        before_destroy :version_builder
       end
 
       def store_versions(author = nil)
-        VersionBuilder.new(self, author).store
+        builder = version_builder
+        @version_builder = nil
+        builder.store(author)
+      end
+
+      def version_builder
+        @version_builder ||= VersionBuilder.new(self)
       end
 
     end
