@@ -5,7 +5,7 @@ module Versionable
     belongs_to :versionable, polymorphic: true
     belongs_to :author, polymorphic: true
 
-    if Rails::VERSION::MAJOR < 5
+    if Versionable::SERIALIZE_JSON
       [:data_changes, :data_snapshot].each do |method|
         serialize method, JSON
       end

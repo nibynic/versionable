@@ -1,5 +1,11 @@
 require_relative 'boot'
 
+if Rails::VERSION::MAJOR < 5
+  module Versionable
+    SERIALIZE_JSON = true
+  end
+end
+
 require 'rails/all'
 
 Bundler.require(*Rails.groups)
@@ -8,7 +14,8 @@ require "versionable"
 module Dummy
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    if Rails.version.match("5")
+
+    if Rails::VERSION::MAJOR >= 5
       config.load_defaults 5.2
     end
 
