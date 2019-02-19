@@ -11,9 +11,9 @@ class Versionable::InstallGeneratorTest < ::Rails::Generators::TestCase
 
     run_generator
 
-    assert_migration "db/migrate/create_versions.rb" do |content|
-      assert_match("t.references :versionable, index: true, polymorphic: true", content)
-      assert_match("t.references :author, index: true, polymorphic: true", content)
+    assert_migration "db/migrate/create_versionable_versions.rb" do |content|
+      assert_match('t.references :versionable, index: { name: "index_versionable_versions_on_versionable_type_and_id" }, polymorphic: true', content)
+      assert_match('t.references :author, index: { name: "index_versionable_versions_on_author_type_and_id" }, polymorphic: true', content)
       assert_match("t.column :data_snapshot, :json", content)
       assert_match("t.column :data_changes, :json", content)
       assert_match("t.column :event, :integer, index: true", content)

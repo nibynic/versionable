@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2019_02_18_114044) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "versions", force: :cascade do |t|
+  create_table "versionable_versions", force: :cascade do |t|
     t.string "versionable_type"
     t.integer "versionable_id"
     t.string "author_type"
@@ -69,10 +69,10 @@ ActiveRecord::Schema.define(version: 2019_02_18_114044) do
     t.integer "event"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["author_type", "author_id"], name: "index_versions_on_author_type_and_author_id"
-    t.index ["created_at"], name: "index_versions_on_created_at"
-    t.index ["event"], name: "index_versions_on_event"
-    t.index ["versionable_type", "versionable_id"], name: "index_versions_on_versionable_type_and_versionable_id"
+    t.index ["author_type", "author_id"], name: "index_versionable_versions_on_author_type_and_id"
+    t.index ["created_at"], name: "index_versionable_versions_on_created_at"
+    t.index ["event"], name: "index_versionable_versions_on_event"
+    t.index ["versionable_type", "versionable_id"], name: "index_versionable_versions_on_versionable_type_and_id"
   end
 
 end

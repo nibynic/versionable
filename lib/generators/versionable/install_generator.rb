@@ -7,7 +7,7 @@ module Versionable
     remove_argument :attributes, :name
 
     def name
-      "CreateVersions"
+      "CreateVersionableVersions"
     end
 
     private

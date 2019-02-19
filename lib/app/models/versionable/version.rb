@@ -10,5 +10,9 @@ module Versionable
         serialize method, JSON
       end
     end
+
+    def self.table_name
+      "versionable_versions"
+    end
   end
 end
