@@ -23,6 +23,7 @@ module Versionable
         when String, Symbol then source.send(parent_def)
         when Proc then source.instance_exec(&parent_def)
         end
+        break if source == visited.last
         raise InfiniteParentLoopError.new(visited + [source]) if visited.include?(source)
         visited << source
       end
