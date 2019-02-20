@@ -19,6 +19,7 @@ module Versionable
       included do
         has_many :versions, as: :versionable, class_name: "Versionable::Version"
         before_destroy :version_builder
+        define_model_callbacks :store_versions
       end
 
       def store_versions(author = nil)

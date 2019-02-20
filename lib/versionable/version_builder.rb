@@ -21,37 +21,39 @@ module Versionable
     end
 
     def store(author)
+      results = []
       if record.present?
-        (@records_before + traverse(record, @included_paths)).uniq.map do |subject|
+        record.run_callbacks :store_versions do
+          results = (@records_before + traverse(record, @included_paths)).uniq.map do |subject|
 
-          destroyed = false
-          begin
-            subject.reload
-          rescue ActiveRecord::RecordNotFound
-            destroyed = true
-          end
-          last_version = subject.versions.order(:created_at).last
+            destroyed = false
+            begin
+              subject.reload
+            rescue ActiveRecord::RecordNotFound
+              destroyed = true
+            end
+            last_version = subject.versions.order(:created_at).last
 
-          event = destroyed ? :destroy : last_version.present? ? :update : :create
+            event = destroyed ? :destroy : last_version.present? ? :update : :create
 
-          previous_snapshot = last_version.try(:data_snapshot) || {}
-          current_snapshot = get_snapshot(subject)
-          diff = diff(previous_snapshot, current_snapshot)
+            previous_snapshot = last_version.try(:data_snapshot) || {}
+            current_snapshot = get_snapshot(subject)
+            diff = diff(previous_snapshot, current_snapshot)
 
-          if event != :update || diff.any?
-            version = Versionable::Version.create(
-              event: event,
-              author: author,
-              versionable: subject,
-              data_snapshot: current_snapshot,
-              data_changes: diff
-            )
-          end
+            if event != :update || diff.any?
+              version = Versionable::Version.create(
+                event: event,
+                author: author,
+                versionable: subject,
+                data_snapshot: current_snapshot,
+                data_changes: diff
+              )
+            end
 
-        end.compact
-      else
-        []
+          end.compact
+        end
       end
+      results
     end
 
     private

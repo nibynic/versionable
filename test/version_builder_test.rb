@@ -205,18 +205,32 @@ class Versionable::VersionBuilderTest < ActiveSupport::TestCase
   end
 
   test "it uses always parent record" do
+    class GalleryMock < ActiveRecord::Base
+      acts_as_versionable
+      after_store_versions :did_store
+
+      def self.table_name
+        "galleries"
+      end
+
+      def did_store
+      end
+    end
+
     post = create(:post)
     comment = create(:comment, post: post)
     user = create(:user)
-    gallery = create(:gallery)
+    gallery = create(:gallery).becomes(GalleryMock)
 
     get_parent_spy = Spy.on_instance_method(Versionable::VersionBuilder, :get_parent).and_return(gallery)
+    did_store_spy = Spy.on(gallery, :did_store)
 
     version = Versionable::VersionBuilder.new(comment).store(user).first
 
     assert_equal [comment], get_parent_spy.calls.first.args
     assert_equal gallery, version.versionable
-    
+    assert_equal 1, did_store_spy.calls.length
+
     get_parent_spy.unhook
   end
 end
