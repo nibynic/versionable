@@ -1,12 +1,12 @@
 require_relative 'boot'
 
+require 'rails/all'
+
 if Rails::VERSION::MAJOR < 5
   module Versionable
     SERIALIZE_JSON = true
   end
 end
-
-require 'rails/all'
 
 Bundler.require(*Rails.groups)
 require "versionable"

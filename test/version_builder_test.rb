@@ -177,6 +177,8 @@ class Versionable::VersionBuilderTest < ActiveSupport::TestCase
     post.store_versions(user)
 
     category_version = category_1.versions.last
+    
+    category_1.posts.first
 
     assert_equal "destroy", category_version.event
     assert_equal user, category_version.author

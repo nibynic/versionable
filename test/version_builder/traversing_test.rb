@@ -5,40 +5,40 @@ class Versionable::TraversingTest < ActiveSupport::TestCase
     include Versionable::Traversing
   end
 
-  test "it lists all versionable related records" do
+  test "it lists all versionable dependent-destroyed related records" do
     post = create(:post)
     comment_1 = create(:comment, post: post)
     comment_2 = create(:comment, post: post)
-    photo_1 = create(:photo, post: post)
-    gallery_1 = create(:gallery, post: post)
-    post_2 = create(:post)
-    category_1 = create(:category, posts: [post, post_2])
+    photo = create(:photo, post: post)
+    gallery = create(:gallery, post: post)
+    category = create(:category, posts: [post])
+    banner = create(:banner, category: category)
 
     assert_equal [
       post,
       comment_1,
       comment_2,
-      photo_1,
-      gallery_1,
-      category_1,
-      post_2
+      photo,
+      gallery,
+      category,
+      banner
     ], Subject.new.send(:traverse, post)
   end
 
   test "it skips excepted paths" do
     post = create(:post)
-    comment_1 = create(:comment, post: post)
-    comment_2 = create(:comment, post: post)
-    photo_1 = create(:photo, post: post)
-    gallery_1 = create(:gallery, post: post)
-    post_2 = create(:post)
-    category_1 = create(:category, posts: [post, post_2])
+    create(:comment, post: post)
+    create(:comment, post: post)
+    photo = create(:photo, post: post)
+    gallery = create(:gallery, post: post)
+    category = create(:category, posts: [post])
+    banner = create(:banner, category: category)
 
     assert_equal [
       post,
-      photo_1,
-      gallery_1,
-      category_1
-    ], Subject.new.send(:traverse, post, ["comments", "category.posts"])
+      photo,
+      gallery,
+      category
+    ], Subject.new.send(:traverse, post, ["comments", "category.banners"])
   end
 end
