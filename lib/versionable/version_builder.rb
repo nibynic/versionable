@@ -1,11 +1,13 @@
 require_relative "concerns/change_detection"
 require_relative "concerns/option_normalization"
+require_relative "concerns/parent_finding"
 require_relative "concerns/traversing"
 
 module Versionable
   class VersionBuilder
     include ChangeDetection
     include OptionNormalization
+    include ParentFinding
     include Traversing
 
     attr_reader :record
@@ -53,15 +55,6 @@ module Versionable
     end
 
     private
-
-    def get_parent(record)
-      parent_name = record.class.versionable_options[:parent]
-      if parent_name.present?
-        record.send(parent_name)
-      else
-        record
-      end
-    end
 
     def get_snapshot(subject)
       options = normalize_options(subject.class.versionable_options)

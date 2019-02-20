@@ -1,4 +1,5 @@
 require 'test_helper'
+require "spy"
 
 class Versionable::VersionBuilderTest < ActiveSupport::TestCase
   test "it doesn't create version if no changes were detected" do
@@ -207,10 +208,15 @@ class Versionable::VersionBuilderTest < ActiveSupport::TestCase
     post = create(:post)
     comment = create(:comment, post: post)
     user = create(:user)
+    gallery = create(:gallery)
+
+    get_parent_spy = Spy.on_instance_method(Versionable::VersionBuilder, :get_parent).and_return(gallery)
 
     version = Versionable::VersionBuilder.new(comment).store(user).first
 
-    assert_equal version, post.versions.first
-    assert_equal 0, comment.versions.count
+    assert_equal [comment], get_parent_spy.calls.first.args
+    assert_equal gallery, version.versionable
+    
+    get_parent_spy.unhook
   end
 end
