@@ -98,6 +98,15 @@ class Versionable::VersionBuilderTest < ActiveSupport::TestCase
     }), Versionable::Version.group(:versionable_type).count
   end
 
+  test "it ignores unsaved records" do
+    post = build(:post, title: "My post", content: "hello!")
+    user = create(:user)
+
+    version = Versionable::VersionBuilder.new(post).store(user).first
+
+    assert_nil version
+  end
+
   test "it detects changes in related records" do
     post = create(:post)
     # has_many nested
@@ -177,7 +186,7 @@ class Versionable::VersionBuilderTest < ActiveSupport::TestCase
     post.store_versions(user)
 
     category_version = category_1.versions.last
-    
+
     category_1.posts.first
 
     assert_equal "destroy", category_version.event

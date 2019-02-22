@@ -5,7 +5,7 @@ module Versionable
     private
 
     def traverse(record, except = [], path = nil, visited = [])
-      unless visited.include?(record) || !record.respond_to?(:store_versions)
+      if !visited.include?(record) && record.respond_to?(:store_versions) && !record.new_record?
         list = except.include?(path) ? [] : [record]
         record.class.reflect_on_all_associations.each do |reflection|
           if reflection.options[:dependent] == :destroy

@@ -41,4 +41,13 @@ class Versionable::TraversingTest < ActiveSupport::TestCase
       category
     ], Subject.new.send(:traverse, post, ["comments", "category.banners"])
   end
+
+  test "it skips new (unsaved) records" do
+    post = create(:post)
+    build(:gallery, post: post)
+
+    assert_equal [
+      post
+    ], Subject.new.send(:traverse, post)
+  end
 end

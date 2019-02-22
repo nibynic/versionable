@@ -22,7 +22,7 @@ module Versionable
 
     def store(author)
       results = []
-      if record.present?
+      if record.present? && !record.new_record?
         record.run_callbacks :store_versions do
           results = (@records_before + traverse(record, @included_paths)).uniq.map do |subject|
 
