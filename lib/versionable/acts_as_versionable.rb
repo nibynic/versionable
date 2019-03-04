@@ -7,10 +7,8 @@ module Versionable
     class_methods do
       def acts_as_versionable(options = {})
         include ModelExtension
-        @versionable_options = options
+        self.versionable_options = options
       end
-
-      attr_reader :versionable_options
     end
 
     module ModelExtension
@@ -20,6 +18,7 @@ module Versionable
         has_many :versions, as: :versionable, class_name: "Versionable::Version"
         before_destroy :version_builder
         define_model_callbacks :store_versions
+        class_attribute :versionable_options
       end
 
       def store_versions(author = nil)

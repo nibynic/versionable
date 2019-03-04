@@ -28,13 +28,20 @@ class Versionable::ActsAsVersionableTest < ActiveSupport::TestCase
     class Subject1 < ActiveRecord::Base
       acts_as_versionable only: :user
     end
+    class Subject2 < Subject1
+    end
+    class Subject3 < ActiveRecord::Base
+      acts_as_versionable only: :posts
+    end
 
     assert_equal ({ only: :user }), Subject1.versionable_options
+    assert_equal ({ only: :user }), Subject2.versionable_options
+    assert_equal ({ only: :posts }), Subject3.versionable_options
   end
 
   test "it defines store_versions callbacks" do
     assert_nothing_raised do
-      class Subject2 < ActiveRecord::Base
+      class Subject4 < ActiveRecord::Base
         acts_as_versionable
         before_store_versions :before_hook
         after_store_versions :after_hook
